@@ -1,17 +1,16 @@
 %Classification using perceptron
 clc
 clear
-%Reading apple images
+%sudaromi pradiniai taskai
 x=0:1/19:1;
 T=(1+0.6*sin(2*pi*x/0.7)+0.3*sin(2*pi*x))/2;
 figure(1)
 plot(x,T,'kx');
-%%
 
 %% train multi perceptron with one inputs and one output
 
 %first layer
-% generate random initial values of w1 and b
+% generate random initial values of w1x and bx
 w11 = randn(1);
 w12 = randn(1);
 w13 = randn(1);
@@ -53,6 +52,8 @@ y_2 = zeros(length(x),1);
 e1=zeros(length(x),1);
 
 for i = 1:20
+    %paskaiciuojamas rezultatas ir palyginamas su norimu gauti, taip
+    %isskaiciuojama klaida
     y_2(i)=y11(i)*w21+y12(i)*w22+y13(i)*w23+y14(i)*w24+b21;
     e1(i)=T(i)-y_2(i);
 end
@@ -82,19 +83,20 @@ hold off
 
 while (e>error) % executes while the total error is not ((e_abs > error)||0
     j=j+1;
-	% here should be your code of parameter update
-%   calculate output for current example
-% 
-%   calculate error for current example
-% 
-%   update parameters of output layer
+    
+%   update parameters
     for i= 1:20
+        %keiciami parametrai antrame sluoksnyje, imant isvestine pagal
+        %keiciama parametra nuo galutinio rezultato
         w21 = w21 + n*e1(i)*y11(i);
         w22 = w22 + n*e1(i)*y12(i);
         w23 = w23 + n*e1(i)*y13(i);
         w24 = w24 + n*e1(i)*y14(i);
         b21 = b21 + n*e1(i);
         
+        %keiciami parametrai pirmame sluoksnyje, imant isvestine pagal
+        %keiciama parametra nuo galutinio rezultato. cia isvestine
+        %sudetingesne, nes pirmame sluoksnyje naudojama netiesine funkcija
         w11 = w11 + n*e1(i)*w21*x(i)*exp(b11+w11*x(i))/((exp(b11+w11*x(i))+1)^2);
         w12 = w12 + n*e1(i)*w22*x(i)*exp(b12+w12*x(i))/((exp(b12+w12*x(i))+1)^2);
         w13 = w13 + n*e1(i)*w23*x(i)*exp(b13+w13*x(i))/((exp(b13+w13*x(i))+1)^2);
@@ -108,8 +110,7 @@ while (e>error) % executes while the total error is not ((e_abs > error)||0
        
     end
 % 
-%   Test how good are updated parameters (weights) on all examples used for training
-%   calculate outputs and errors for all 5 examples using current values of the parameter set {w1, w2, b}
+%   is naujo skaiciuojami pirmo sluoksnio isejimai
     for i = 1:20
         v11(i)=x(i)*w11+b11;
         v12(i)=x(i)*w12+b12;
@@ -121,7 +122,7 @@ while (e>error) % executes while the total error is not ((e_abs > error)||0
         y13(i)=1/(1+exp(-v13(i)));
         y14(i)=1/(1+exp(-v14(i)));
     end
-    
+    %is naujo skaiciuojami antro sluoksnio isejimai
     for i = 1:20
         y_2(i)=y11(i)*w21+y12(i)*w22+y13(i)*w23+y14(i)*w24+b21;
         e1(i)=T(i)-y_2(i);
@@ -132,107 +133,30 @@ while (e>error) % executes while the total error is not ((e_abs > error)||0
         e=e+e1(i)^2/2;
     end
 end
+%palyginami gauti rezultatai su turimais gauti
 figure(2)
 hold on
 plot(x,T,'kx');
 plot(x,y_2,'ro');
 hold off
-% figure(1)
-% x=0:0.01:1;
-% f=-b/w2-x*w1/w2;
-% plot(x,f,'g')
-% hold on
-% plot(hsv_value_A1,metric_A1,'b*')
-% plot(hsv_value_A2,metric_A2,'b*')
-% plot(hsv_value_A3,metric_A3,'b*')
-% plot(hsv_value_A4,metric_A4,'b*')
-% plot(hsv_value_A5,metric_A5,'b*')
-% plot(hsv_value_A6,metric_A6,'b*')
-% plot(hsv_value_A7,metric_A7,'b*')
-% plot(hsv_value_A8,metric_A8,'b*')
-% plot(hsv_value_A9,metric_A9,'b*')
-% plot(hsv_value_P1,metric_P1,'ro')
-% plot(hsv_value_P2,metric_P2,'ro')
-% plot(hsv_value_P3,metric_P3,'ro')
-% plot(hsv_value_P4,metric_P4,'ro')
-% hold off
-% 
-% v=hsv_value_A4*w1+metric_A4*w2+b;
-% figure(2)
-% subplot(4,2,1)
-% image(A4);
-% if v>0
-%     title('obuolys');
-% else
-%     title('kriause');
-% end
-% 
-% v=hsv_value_A5*w1+metric_A5*w2+b;
-% figure(2)
-% subplot(4,2,2)
-% image(A5);
-% if v>0
-%     title('obuolys');
-% else
-%     title('kriause');
-% end
-% 
-% v=hsv_value_A6*w1+metric_A6*w2+b;
-% figure(2)
-% subplot(4,2,3)
-% image(A6);
-% if v>0
-%     title('obuolys');
-% else
-%     title('kriause');
-% end
-%     
-% v=hsv_value_A7*w1+metric_A7*w2+b;
-% figure(2)
-% subplot(4,2,4)
-% image(A7);
-% if v>0
-%     title('obuolys');
-% else
-%     title('kriause');
-% end
-% 
-% v=hsv_value_A8*w1+metric_A8*w2+b;
-% figure(2)
-% subplot(4,2,5)
-% image(A8);
-% if v>0
-%     title('obuolys');
-% else
-%     title('kriause');
-% end
-% 
-% v=hsv_value_A9*w1+metric_A9*w2+b;
-% figure(2)
-% subplot(4,2,6)
-% image(A9);
-% if v>0
-%     title('obuolys');
-% else
-%     title('kriause');
-% end
-% 
-% v=hsv_value_P3*w1+metric_P3*w2+b;
-% figure(2)
-% subplot(4,2,7)
-% image(P3);
-% if v>0
-%     title('obuolys');
-% else
-%     title('kriause');
-% end
-% 
-% v=hsv_value_P4*w1+metric_P4*w2+b;
-% figure(2)
-% subplot(4,2,8)
-% image(P4);
-% if v>0
-%     title('obuolys');
-% else
-%     title('kriause');
-% end
+
+%Atvaizduojama tiksli kreive gauta is perceptrono
+x=0:1/199:1;
+ for i = 1:200
+        v11(i)=x(i)*w11+b11;
+        v12(i)=x(i)*w12+b12;
+        v13(i)=x(i)*w13+b13;
+        v14(i)=x(i)*w14+b14;
+        % calculate current output of the perceptron 
+        y11(i)=1/(1+exp(-v11(i)));
+        y12(i)=1/(1+exp(-v12(i)));
+        y13(i)=1/(1+exp(-v13(i)));
+        y14(i)=1/(1+exp(-v14(i)));
+ end
+y_3=zeros(length(x));
+for i = 1:200
+    y_3(i)=y11(i)*w21+y12(i)*w22+y13(i)*w23+y14(i)*w24+b21;
+end
+
+figure(3)
+plot(x,y_3);
